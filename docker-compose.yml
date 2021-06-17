@@ -1,0 +1,45 @@
+version: '3.7'
+services:
+  php:
+    build: './php/'
+    networks:
+      - yeto-net
+    volumes:
+      - ./public_html:/var/www/html
+
+    ports:
+      - 8000:80
+
+    expose:
+      - 9000
+
+  mariadb:
+    image: mariadb:10.5.10-focal
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456789
+      MYSQL_USER: dinyad
+      MYSQL_PASSWORD: yeto11
+      MYSQL_DATABASE: test_db
+
+    volumes: 
+      - ./mysqldata:/var/lib/mysql
+    ports: 
+      - 6033:3306
+    networks: 
+      - yeto-net
+
+  adminer:
+    image: adminer
+    restart: always
+    environment: 
+      PMA_ARBITRARY: 1
+      PMA_HOST: mariadb
+    depends_on: 
+      - mariadb
+    networks: 
+      - yeto-net
+    ports:
+      - 7777:8080
+
+networks:
+  yeto-net:
